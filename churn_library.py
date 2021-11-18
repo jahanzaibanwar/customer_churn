@@ -6,8 +6,9 @@ date: Nov 18, 2021
 """
 
 # import libraries
-import pandas as pd
 import numpy as np
+import pandas as pd
+# import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 
@@ -22,6 +23,7 @@ def import_data(pth):
             df: pandas dataframe
     """
     data = pd.read_csv(pth)
+    data['Churn'] = data['Attrition_Flag'].apply(lambda val: 0 if val == 'Existing Customer' else 1)
     return data
 
 
@@ -36,9 +38,8 @@ def perform_eda(df):
     """
     print(df.isnull().sum(), "\n")
     print("Shape of the dataframe is {}".format(df.shape), "\n")
-    print(df.describe())
+    # print(df.describe())
 
-    df['Churn'] = df['Attrition_Flag'].apply(lambda val: 0 if val == 'Existing Customer' else 1)
     column_names = ['Churn', 'Customer_Age', 'Marital_Status', 'Total_Trans_Ct']
 
     for col in column_names[:-2]:
@@ -70,7 +71,7 @@ perform_eda(dataframe)
 def encoder_helper(df, category_lst, response):
     """
     helper function to turn each categorical column into a new column with
-    propotion of churn for each category - associated with cell 15 from the notebook
+    proportion of churn for each category - associated with cell 15 from the notebook
 
     input:
             df: pandas dataframe
@@ -80,7 +81,26 @@ def encoder_helper(df, category_lst, response):
     output:
             df: pandas dataframe with new columns for
     """
-    
+    value_list = []
+    column_groups = df.groupby(category_lst).mean()[response]
+
+    for val in df[category_lst]:
+        value_list.append(column_groups.loc[val])
+
+    df[category_lst + '_Churn'] = value_list
+
+    return df
+
+
+target_column = 'Churn'
+column_list = ['Gender', 'Education_Level', 'Marital_Status', 'Income_Category', 'Card_Category']
+encoded_column = pd.DataFrame(np.NAN)
+for col in column_list:
+    encoded_column = encoder_helper(dataframe, col, target_column)
+
+print(encoded_column['Card_Category_Churn'])
+
+print(encoded_column.columns)
 
 
 def perform_feature_engineering(df, response):
