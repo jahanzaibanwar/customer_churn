@@ -3,7 +3,7 @@
 - Project **Predict Customer Churn** of ML DevOps Engineer Nanodegree Udacity
 
 ## Project Description
-Your project description here.
+Customer Churn analysis with unit testing
 
 
 ## Running Files
