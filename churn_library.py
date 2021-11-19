@@ -148,7 +148,7 @@ def feature_importance_plot(model, X_data, output_pth):
     output:
              None
     """
-    importances = model.feature_importances_
+    importances = model.best_estimator_.feature_importances_
     # Sort feature importances in descending order
     indices = np.argsort(importances)[::-1]
 
@@ -193,9 +193,12 @@ def train_models(X_train_data, X_test_data, y_train_data, y_test_data):
         'criterion': ['gini', 'entropy']
     }
 
-    cv_rfc = GridSearchCV(estimator=rfc, param_grid=param_grid, cv=5)
+    cv_rfc = GridSearchCV(estimator=rfc, param_grid=param_grid, cv=5,
+                          n_jobs=-1,refit=True)
+
 
     cv_rfc.fit(X_train_data, y_train_data)
+    print()
 
     lrc.fit(X_train_data, y_train_data)
 
@@ -218,7 +221,7 @@ def train_models(X_train_data, X_test_data, y_train_data, y_test_data):
     plt.savefig('images/Roc Curve lrc and rfc on Test data')
     plt.close()
 
-    joblib.dump(cv_rfc.best_estimator_, 'models/rfc_model.pkl')
+    joblib.dump(cv_rfc, 'models/rfc_model.pkl')
     joblib.dump(lrc, 'models/logistic_model.pkl')
     return y_train_preds_rf, y_test_preds_rf, y_train_preds_lr, y_test_preds_lr
 
@@ -246,7 +249,7 @@ if __name__ == '__main__':
     print(y_train.shape)
 
     # Training and saving the model
-    #train_models(X_train, X_test, y_train, y_test )
+    train_models(X_train, X_test, y_train, y_test )
     #print("Done")
 
     # Feature Importance
