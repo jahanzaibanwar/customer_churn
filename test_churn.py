@@ -32,42 +32,37 @@ def test_import():
         raise err
 
 
-#
-# # def test_eda(perform_eda):
-# # 	'''
-# # 	test perform eda function
-# # 	'''
-# # 	pass
-# #
-# #
-# # def test_encoder_helper(encoder_helper):
-# # 	'''
-# # 	test encoder helper
-# # 	'''
-# # 	pass
-# #
-# #
-# # def test_perform_feature_engineering(perform_feature_engineering):
-# # 	'''
-# # 	test perform_feature_engineering
-# # 	'''
-# # 	pass
-# #
-# #
-# # def test_train_models(train_models):
-# # 	'''
-# # 	test train_models
-# # 	'''
-# # 	pass
-# #
+def test_eda(perform_eda):
+    '''
+	test perform eda function
+	'''
+    pass
+
+
+def test_encoder_helper(encoder_helper):
+    '''
+	test encoder helper
+	'''
+    pass
+
+
+def test_perform_feature_engineering(perform_feature_engineering):
+    '''
+	test perform_feature_engineering
+	'''
+    pass
+
+
+def test_train_models(train_models):
+    '''
+	test train_models
+	'''
+    pass
+
+
 # if __name__ == "__main__":
 test_import()
-#    logging.basicConfig(
-#        filename='churn_library.log',
-#        level=logging.INFO,
-#        filemode='w',
-#        format='%(name)s - %(levelname)s - %(message)s')
-#
+
 # #
 # #
 # #
