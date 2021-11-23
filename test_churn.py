@@ -9,7 +9,6 @@ import os
 import churn_library as cls
 from churn_library import CATEGORICAL_COLUMNS
 #from churn_library import import_data
-import pytest
 
 logging.basicConfig(
     filename='logs/churn_library.log',
@@ -25,32 +24,33 @@ def test_import():
     other test functions
     """
     try:
-        df = cls.import_data("data/bank_data.csv")
+        dataframe = cls.import_data("data/bank_data.csv")
         logging.info("Testing import_data: SUCCESS")
     except FileNotFoundError as err:
         logging.error("Testing import_eda: The file wasn't found")
         raise err
 
     try:
-        assert df.shape[0] > 0
-        assert df.shape[1] > 0
+        assert dataframe.shape[0] > 0
+        assert dataframe.shape[1] > 0
     except AssertionError as err:
         logging.error(
             "Testing import_data: The file doesn't appear to have rows and "
             "columns")
         raise err
-    return df
+    return dataframe
 
 
 
 def test_eda():
-    df = test_import()
     """
-    test perform eda function
-    """
-    df['Churn'] = df['Attrition_Flag'].apply(
+       test perform eda function
+       """
+    dataframe = test_import()
+
+    dataframe['Churn'] = dataframe['Attrition_Flag'].apply(
         lambda val: 0 if val == 'Existing Customer' else 1)
-    cls.perform_eda(df)
+    cls.perform_eda(dataframe)
     path = 'images/eda'
     try:
         dir_val = os.listdir(path)
@@ -60,14 +60,14 @@ def test_eda():
         logging.warning("Testing perform_eda: It does not appear that the you "
                         "are correctly saving images to the eda folder.")
         raise err
-    return df
+    return dataframe
 
 
 def test_encoder_helper():
     """
     test encoder helper
     """
-    df = test_eda()
+    dataframe = test_eda()
     #cat_columns = ['Gender', 'Education_Level', 'Marital_Status',
      #              'Income_Category', 'Card_Category'
      #              ]
@@ -75,8 +75,8 @@ def test_encoder_helper():
     # print(df)
     try:
         for cat_cols in CATEGORICAL_COLUMNS:
-            df = cls.encoder_helper(df, cat_cols, 'Churn')
-            assert cat_cols in df.columns
+            dataframe = cls.encoder_helper(dataframe, cat_cols, 'Churn')
+            assert cat_cols in dataframe.columns
         logging.info("Testing encoder_helper: SUCCESS")
     except AssertionError as err:
         logging.error(
@@ -84,20 +84,20 @@ def test_encoder_helper():
             "transformed categorical columns")
         return err
 
-    return df
+    return dataframe
 
 #
 def test_perform_feature_engineering():
     """
     test perform_feature_engineering
     """
-    df = test_encoder_helper()
-    X_train_data, X_test_data, y_train_data, y_test_data = \
-        cls.perform_feature_engineering(df)
+    dataframe = test_encoder_helper()
+    x_train_data, x_test_data, y_train_data, y_test_data = \
+        cls.perform_feature_engineering(dataframe)
     try:
-        assert X_train_data.shape[0] == y_train_data.shape[0]
-        assert X_train_data.shape[0] > 1
-        assert X_test_data.shape[0] > 1
+        assert x_train_data.shape[0] == y_train_data.shape[0]
+        assert x_train_data.shape[0] > 1
+        assert x_test_data.shape[0] > 1
         assert len(y_train_data) > 1
         assert len(y_test_data) > 1
 
@@ -105,16 +105,16 @@ def test_perform_feature_engineering():
     except AssertionError as err:
         logging.info('The train test split is not valid')
         raise err
-    return X_train_data, X_test_data, y_train_data, y_test_data
+    return x_train_data, x_test_data, y_train_data, y_test_data
 
 #
 def test_train_models():
     """
     test train_models
     """
-    X_train_data, X_test_data, y_train_data, y_test_data \
+    x_train_data, x_test_data, y_train_data, y_test_data \
         =test_perform_feature_engineering()
-    cls.train_models(X_train_data, X_test_data, y_train_data, y_test_data)
+    cls.train_models(x_train_data, x_test_data, y_train_data, y_test_data)
     path = 'images/results'
     try:
         dir_val = os.listdir(path)
@@ -141,10 +141,4 @@ def test_train_models():
 
 
 if __name__ == "__main__":
-    DATAFRAME = test_import()
-
-    test_eda()
-    test_encoder_helper()
-
-    X_TRAIN, X_TEST, Y_TRAIN, Y_TEST = test_perform_feature_engineering( )
     test_train_models()
